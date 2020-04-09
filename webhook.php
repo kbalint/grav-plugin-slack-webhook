@@ -9,7 +9,7 @@ use RocketTheme\Toolbox\Event\Event;
  * Class ElyiosSyntaxPlugin
  * @package Grav\Plugin
  */
-class SlackWebhookPlugin extends Plugin
+class WebhookPlugin extends Plugin
 {
     /**
      * @return array
@@ -38,12 +38,19 @@ class SlackWebhookPlugin extends Plugin
 
             $content = $this->grav['twig']->processString($params['body'], ['form' => $form]);
 
-            $client = new \GuzzleHttp\Client();
-            // Send an asynchronous request.
-            $response = $client->post($slackWebhook, [\GuzzleHttp\RequestOptions::JSON => [
-                'text' => 'New form completed: \\n' . $content,
-                'icon_emoji' => ':pencil:'
-            ]]);
+	    $useragent = "Mozilla/4.0 (compatible; MSIE 5.01; Windows NT 5.0)";
+	    $payload = 'payload={"channel": "#xxx", "username": "webhookbot", "text": "'.$content.'", "icon_emoji": ":ghost:"}';
+
+	    $ch = curl_init();
+		curl_setopt($ch, CURLOPT_USERAGENT, $useragent); //set our user agent
+		curl_setopt($ch, CURLOPT_POST, TRUE); //set how many paramaters to post
+		curl_setopt($ch, CURLOPT_URL,$slackWebhook); //set the url we want to use
+		curl_setopt($ch, CURLOPT_POSTFIELDS,$payload);
+
+		curl_exec($ch); //execute and get the results
+		curl_close($ch);
+
+
         }
     }
 }

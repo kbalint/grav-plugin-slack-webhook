@@ -1,6 +1,7 @@
-name: Slack Webhook
+name: Webhook
 version: 0.1.0
 description: Push forms results into slack messages
+testing: false
 icon: plug
 author:
   name: Damien Bry
